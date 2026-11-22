@@ -1,0 +1,78 @@
+---
+title: "Schedule Recurring Tasks With Cron on Your VPS"
+sidebarTitle: "Cron Jobs"
+description: "Automate backups, cleanup scripts, and any recurring task on your waveserv VPS by adding entries to crontab — with examples and common pitfalls."
+---
+
+Cron is the classic Unix job scheduler: give it a schedule and a command, and it runs that command for you forever. Backups, log cleanup, hourly syncs, nightly reboots — anything you can put in a shell command, cron can put on a timer.
+
+## Edit your crontab
+
+Each user has their own crontab. Run this as the user you want the job to run as:
+
+```bash
+crontab -e
+```
+
+The first time, you will be asked to pick an editor. `nano` is the easiest choice.
+
+## Cron schedule syntax
+
+Each line has five time fields followed by the command to run:
+
+```text
+*  *  *  *  *  command
+│  │  │  │  │
+│  │  │  │  └─ day of week (0-6, Sunday=0)
+│  │  │  └──── month (1-12)
+│  │  └─────── day of month (1-31)
+│  └────────── hour (0-23)
+└───────────── minute (0-59)
+```
+
+## Example jobs
+
+```bash
+# Every day at 3:00 AM: back up the home directory
+0 3 * * * tar czf /root/backup-$(date +\%F).tar.gz /home
+
+# Every 15 minutes: ping a health check
+*/15 * * * * curl -fsS https://example.com/health > /dev/null
+
+# Every Sunday at 4:30 AM: clear old logs
+30 4 * * 0 find /var/log -name "*.log" -mtime +30 -delete
+
+# On reboot: start a script
+@reboot /home/alice/scripts/startup.sh
+```
+
+<Tip>
+  When writing schedules by hand, [crontab.guru](https://crontab.guru) is invaluable for double-checking.
+</Tip>
+
+## List, view, and remove
+
+```bash
+# List current crontab
+crontab -l
+
+# Remove all cron jobs for the current user
+crontab -r
+```
+
+## Common pitfalls
+
+- **Cron has a minimal PATH.** Always use absolute paths (`/usr/bin/python3`, not just `python3`) or set `PATH=` at the top of your crontab.
+- **Cron does not load your shell profile.** Environment variables from `~/.bashrc` are not available. Set them explicitly in the crontab or inside the script.
+- **Output is emailed by default.** On a VPS without mail configured, this fails silently. Redirect output to a log file so you can debug:
+  ```bash
+  0 3 * * * /home/alice/backup.sh >> /var/log/backup.log 2>&1
+  ```
+
+## Check that cron is running
+
+```bash
+sudo systemctl status cron
+```
+
+If it is stopped, start it and see [systemd Services](/vps/systemd-services).
