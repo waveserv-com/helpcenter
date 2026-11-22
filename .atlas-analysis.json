@@ -1,0 +1,91 @@
+{
+  "projectType": "saas",
+  "projectName": "waveserv",
+  "projectDescription": "A free VPS hosting platform where anyone can claim a free virtual private server and manage it through a web-based control panel.",
+  "theme": "almond",
+  "primaryColor": "#ef7025",
+  "lightColor": "#eec9bc",
+  "darkColor": "#4fa1ab",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "claim-your-vps",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Control Panel",
+            "pages": [
+              "panel/overview",
+              "panel/console",
+              "panel/file-manager",
+              "panel/networking"
+            ]
+          },
+          {
+            "group": "Managing Your VPS",
+            "pages": [
+              "vps/start-stop-restart",
+              "vps/reinstall-os",
+              "vps/ssh-access",
+              "vps/resource-limits"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/install-web-server",
+              "guides/setup-game-server",
+              "guides/run-a-bot",
+              "guides/custom-domain"
+            ]
+          },
+          {
+            "group": "Account & Billing",
+            "pages": [
+              "account/register",
+              "account/renew",
+              "account/rules"
+            ]
+          },
+          {
+            "group": "FAQ & Support",
+            "pages": [
+              "faq",
+              "troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Claim a free VPS with no credit card required",
+    "Web-based control panel for server management",
+    "In-browser console / terminal access",
+    "File manager for uploading and editing files",
+    "Start, stop, and restart server actions",
+    "OS reinstall / reset to clean state",
+    "SSH access support",
+    "Networking & port management",
+    "Resource usage monitoring (CPU, RAM, disk)",
+    "Support for hosting websites, game servers, and bots"
+  ],
+  "publicApiSurface": [
+    "Claim VPS flow (registration → allocation)",
+    "Panel login and session management",
+    "Server power controls (start / stop / restart)",
+    "OS reinstall wizard",
+    "File Manager (upload, download, edit, delete)",
+    "In-browser console (web terminal)",
+    "Network / IP & port settings",
+    "Account renewal / plan management",
+    "Resource dashboard (CPU, RAM, bandwidth)"
+  ]
+}

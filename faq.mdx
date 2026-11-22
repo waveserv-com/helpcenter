@@ -1,0 +1,99 @@
+---
+title: "waveserv Frequently Asked Questions"
+sidebarTitle: "FAQ"
+description: "Answers to the most common questions about waveserv — account limits, allowed uses, renewal, performance, and more."
+---
+
+Here are answers to the most common questions about waveserv. If you don't find your answer here, visit the [Troubleshooting](/troubleshooting) page or contact support.
+
+## Getting Started
+
+<AccordionGroup>
+  <Accordion title="Is waveserv really free?">
+    Yes — completely free with no credit card required. There may be optional paid upgrades in the future, but the free tier will always exist.
+  </Accordion>
+
+  <Accordion title="How many VPS can I have?">
+    You can have one free VPS per account. You must delete your current VPS before claiming a new one.
+  </Accordion>
+
+  <Accordion title="What OS options are available?">
+    The following operating systems are available at provisioning time:
+
+    - Ubuntu 22.04 _(recommended)_
+    - Ubuntu 20.04
+    - Debian 12
+    - Debian 11
+    - CentOS 7
+
+    Ubuntu 22.04 is the recommended choice for most use cases.
+  </Accordion>
+
+  <Accordion title="How long does provisioning take?">
+    Your VPS is usually ready within **30–60 seconds** after you request it.
+  </Accordion>
+</AccordionGroup>
+
+## Account & Renewal
+
+<AccordionGroup>
+  <Accordion title="How does the free VPS renewal work?">
+    Renewals happen on a monthly cycle. You'll receive an email reminder before your renewal date — simply click **Renew** in your dashboard to keep your VPS active. For full details, see the [Renewal](/account/renew) page.
+  </Accordion>
+
+  <Accordion title="What happens if I miss my renewal?">
+    <Warning>
+      If you miss your renewal, your VPS will be suspended after a short grace period. Your data is kept for approximately **7 days** and then permanently deleted.
+    </Warning>
+
+    If you need to restore your VPS within that 7-day window, contact support as soon as possible.
+  </Accordion>
+
+  <Accordion title="Can I change my email address?">
+    Yes. You can update your email address from **Account Settings** in the dashboard.
+  </Accordion>
+</AccordionGroup>
+
+## Technical
+
+<AccordionGroup>
+  <Accordion title="What are the VPS specs?">
+    The free tier includes:
+
+    - **CPU:** 1 vCPU
+    - **RAM:** 512 MB – 1 GB
+    - **Storage:** 10–20 GB SSD
+
+    The exact specifications for your VPS are shown in your dashboard after provisioning. For a full breakdown of what the free tier includes, see [Resource Limits](/vps/resource-limits).
+  </Accordion>
+
+  <Accordion title="Can I run a Minecraft server?">
+    Yes! waveserv supports Minecraft servers. See the [Game Server Guide](/guides/setup-game-server) for step-by-step setup instructions.
+
+    <Tip>
+      The 1 GB RAM plan is recommended for the best Minecraft server performance.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Can I run a website?">
+    Absolutely. You can install Nginx or Apache and host any website you like. See the [Web Server Guide](/guides/install-web-server) to get started.
+  </Accordion>
+
+  <Accordion title="Can I run a Discord bot?">
+    Yes. waveserv is a great place to host Discord bots. See the [Discord Bot Guide](/guides/run-a-bot) for instructions on deploying and keeping your bot running 24/7.
+  </Accordion>
+
+  <Accordion title="Is SSH available?">
+    Yes. You get full root SSH access to your VPS. See [SSH Access](/vps/ssh-access) for connection instructions and tips.
+  </Accordion>
+
+  <Accordion title="Why is port 25 blocked?">
+    Port 25 (SMTP) is blocked on all waveserv VPS instances to prevent spam and protect the platform's IP reputation.
+
+    If you need to send emails from your VPS, use a transactional email provider such as **SendGrid** or **Mailgun** via port **587**.
+  </Accordion>
+
+  <Accordion title="Can I install any software?">
+    Yes — you have full root access and can install virtually any software you need. Just make sure your usage complies with the [Acceptable Use Policy](/account/rules).
+  </Accordion>
+</AccordionGroup>

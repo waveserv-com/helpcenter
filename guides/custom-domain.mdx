@@ -1,0 +1,91 @@
+---
+title: "Point a Custom Domain to Your waveserv VPS IP Address"
+sidebarTitle: "Custom Domain"
+description: "Configure your domain registrar's DNS settings to point your custom domain to your waveserv VPS IP address and serve your website or app."
+---
+
+Once your VPS is running a web server, you can point a custom domain to it so visitors can reach your site by name instead of by IP address. This guide walks you through the DNS setup at your registrar and the corresponding web server configuration on your VPS.
+
+## What You Need
+
+Before you start, make sure you have the following:
+
+- A registered domain name from any registrar (Namecheap, GoDaddy, Cloudflare, Porkbun, etc.)
+- Your VPS IP address, which is visible in the waveserv dashboard
+- Nginx or Apache installed and running on your VPS (see [Install Web Server](/guides/install-web-server) if you haven't done this yet)
+
+## Step 1 — Find Your VPS IP
+
+Log in to the waveserv dashboard, click on your VPS, and note the IP address displayed at the top of the overview page. You'll need to enter this exact value as the DNS record target in the next step.
+
+## Step 2 — Add DNS Records at Your Registrar
+
+<Steps>
+  <Step title="Log in to your registrar">
+    Sign in to the control panel of the company where you registered your domain (e.g., Namecheap, GoDaddy, or Cloudflare).
+  </Step>
+  <Step title="Open DNS management">
+    Navigate to the **DNS Management**, **DNS Settings**, or **Advanced DNS** section for your domain. The exact label varies by registrar.
+  </Step>
+  <Step title="Add an A record for the root domain">
+    Create a new DNS record with the following values:
+
+    | Field | Value |
+    | --- | --- |
+    | **Type** | A |
+    | **Name / Host** | `@` (represents the root domain, e.g. `yourdomain.com`) |
+    | **Value / Points to** | Your VPS IP address |
+    | **TTL** | 300 (or Auto) |
+  </Step>
+  <Step title="Add an A record for www (optional)">
+    If you want `www.yourdomain.com` to work as well, add a second A record:
+
+    | Field | Value |
+    | --- | --- |
+    | **Type** | A |
+    | **Name / Host** | `www` |
+    | **Value / Points to** | Your VPS IP address |
+    | **TTL** | 300 (or Auto) |
+  </Step>
+  <Step title="Save your changes">
+    Click **Save** or **Confirm**. DNS changes don't take effect instantly — propagation typically takes between **5 minutes and 48 hours**, though it's usually complete within 30 minutes.
+  </Step>
+</Steps>
+
+## Step 3 — Update Your Web Server Config
+
+While DNS propagates, update your Nginx server block so Nginx knows to serve your site for requests to your domain. Open your site's config file (e.g. `/etc/nginx/sites-available/mysite`) and update the `server_name` directive:
+
+```nginx
+server_name yourdomain.com www.yourdomain.com;
+```
+
+Test the configuration for syntax errors and reload Nginx:
+
+```bash
+nginx -t && systemctl reload nginx
+```
+
+## Step 4 — Enable HTTPS
+
+Once DNS has propagated and your domain resolves to your VPS IP, you can secure your site with a free TLS certificate. See the **Add HTTPS with Let's Encrypt** section in the [Install Web Server](/guides/install-web-server) guide for the full walkthrough.
+
+## Check Propagation
+
+You can verify that DNS has propagated using the `dig` command on your VPS or local machine:
+
+```bash
+dig yourdomain.com A +short
+```
+
+This should return your VPS IP address. If it still shows the old value, wait a few minutes and try again.
+
+You can also use a web-based propagation checker like [whatsmydns.net](https://www.whatsmydns.net) to see how your DNS changes look from different locations around the world.
+
+<Note>
+  Using **Cloudflare** as your DNS provider (free tier) is highly recommended — it adds DDoS protection and a global CDN at no cost. Simply add your domain to Cloudflare, update your registrar's nameservers to Cloudflare's, and manage DNS records from the Cloudflare dashboard.
+</Note>
+
+<Tip>
+  Before making DNS changes, set your record's TTL to a low value like **300 seconds**. This reduces how long old DNS responses are cached by resolvers, so your updates propagate much faster.
+</Tip>

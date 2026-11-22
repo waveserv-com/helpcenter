@@ -1,0 +1,168 @@
+---
+title: "Troubleshooting Common waveserv VPS Problems and Fixes"
+sidebarTitle: "Troubleshooting"
+description: "Fix common waveserv VPS problems — SSH connection failures, server not starting, disk full errors, slow performance, and much more."
+---
+
+This page covers the most common issues waveserv users run into and how to fix them. Work through the relevant section below, and if you're still stuck, see the note at the bottom of the page.
+
+<AccordionGroup>
+  <Accordion title="Can't connect via SSH">
+    Run through this checklist before anything else:
+
+    1. **Is your VPS running?** Check the power status in your control panel — it must show **Running** before SSH will work.
+    2. **Is port 22 open?** Confirm that port 22 is allowed in your [Networking panel](/panel/networking).
+    3. **Are your credentials correct?** Double-check that you're using the right IP address, the username `root`, and your current password.
+
+    If the above all look correct, try these fixes:
+
+    - Use the in-browser [Console](/panel/console) to check whether the server itself is responsive.
+    - From the console, restart the SSH service:
+      ```bash
+      systemctl restart sshd
+      ```
+  </Accordion>
+
+  <Accordion title="VPS won't start">
+    If your VPS is stuck and won't boot, follow these steps in order:
+
+    1. Click **Stop** in the panel, wait 30 seconds, then click **Start** again.
+    2. If it's still stuck, use the **Force Stop** option from the panel, then try starting again.
+    3. If the VPS still won't boot after a force stop, [Reinstalling the OS](/vps/reinstall-os) is the recommended last resort.
+
+    <Warning>
+      Reinstalling the OS will permanently erase all data on your VPS. Back up anything important first.
+    </Warning>
+
+    If none of the above resolves the issue, contact our support.
+  </Accordion>
+
+  <Accordion title="Server is running but website isn't loading">
+    Work through each of these checks in turn:
+
+    1. **Is your web server running?**
+       ```bash
+       systemctl status nginx
+       ```
+       Replace `nginx` with `apache2` if you're using Apache.
+    2. **Are ports 80 and 443 open?** Verify in the [Networking panel](/panel/networking) that HTTP and HTTPS traffic is allowed.
+    3. **Is your firewall blocking traffic?** Check your `ufw` rules:
+       ```bash
+       ufw status
+       ```
+       If HTTP is blocked, allow it:
+       ```bash
+       ufw allow 80/tcp
+       ```
+    4. **Is your DNS pointing to the right IP?** Run a quick DNS lookup to confirm:
+       ```bash
+       dig yourdomain.com A +short
+       ```
+       The returned IP should match your VPS IP shown in the dashboard.
+  </Accordion>
+
+  <Accordion title="Disk full">
+    A full disk can cause all kinds of unexpected failures. Start by checking your overall disk usage:
+
+    ```bash
+    df -h
+    ```
+
+    Then find the largest directories to track down what's consuming space:
+
+    ```bash
+    du -sh /* 2>/dev/null | sort -rh | head -20
+    ```
+
+    Common clean-up steps:
+
+    - **Clear old system logs:**
+      ```bash
+      journalctl --vacuum-time=7d
+      ```
+    - **Remove unused packages:**
+      ```bash
+      apt autoremove
+      ```
+
+    If your disk is genuinely too full to recover from, consider [Reinstalling the OS](/vps/reinstall-os) to start on a clean slate.
+  </Accordion>
+
+  <Accordion title="Out of memory / OOM kills">
+    If processes are being killed unexpectedly, your VPS is likely running out of RAM. Start by checking your current memory usage:
+
+    ```bash
+    free -h
+    ```
+
+    Find the processes consuming the most memory:
+
+    ```bash
+    ps aux --sort=-%mem | head -10
+    ```
+
+    Restart or stop the heaviest offending process to free up RAM immediately.
+
+    <Tip>
+      Adding a swap file is a reliable way to prevent OOM kills on low-RAM plans. Run the following commands to create a 512 MB swap file:
+    </Tip>
+
+    ```bash
+    fallocate -l 512M /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    ```
+
+    The last line makes the swap file persist across reboots.
+  </Accordion>
+
+  <Accordion title="Forgot VPS password">
+    If you've lost your root password, you have a couple of options:
+
+    1. **Use the in-browser Console.** If you can still access the [Console](/panel/console), log in there and reset your password:
+       ```bash
+       passwd
+       ```
+    2. **Reinstall the OS.** If you can't access the console either, [Reinstalling the OS](/vps/reinstall-os) will let you start fresh with a new password.
+
+    <Warning>
+      Reinstalling the OS permanently deletes all data on your VPS. Only do this if you have no other way in and have accepted the data loss.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Bot / service stopped after SSH disconnect">
+    When your SSH session ends, any processes you started in that session are terminated along with it.
+
+    To keep a process running after you disconnect, use one of the following tools:
+
+    - **screen** — a lightweight terminal multiplexer
+    - **tmux** — a more feature-rich terminal multiplexer
+    - **PM2** — a process manager designed for Node.js apps and bots
+
+    See the [Run a Bot](/guides/run-a-bot) guide for detailed instructions on keeping your service alive 24/7.
+  </Accordion>
+
+  <Accordion title="General 'my VPS is slow' checklist">
+    If your VPS feels sluggish, work through this quick diagnostic checklist:
+
+    - **CPU:** Run `htop` and look for any processes pinning the CPU at 100%.
+      ```bash
+      htop
+      ```
+    - **Disk:** A full disk causes severe slowdowns. Check with:
+      ```bash
+      df -h
+      ```
+    - **RAM:** Low memory leads to heavy swapping, which drags everything down. Check with:
+      ```bash
+      free -h
+      ```
+    - **Throttling:** If you've been running at high CPU for an extended period, you may have hit resource limits. See [Resource Limits](/vps/resource-limits) for details.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  If none of these solutions resolve your issue, contact waveserv support via the dashboard. Include your **VPS ID** and a clear description of the problem so the support team can help you as quickly as possible.
+</Note>
