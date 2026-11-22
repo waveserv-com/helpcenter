@@ -1,0 +1,83 @@
+---
+title: "Configure a UFW Firewall on Your waveserv VPS"
+sidebarTitle: "Firewall"
+description: "Protect your waveserv VPS with UFW — allow only the ports you need, block everything else, and check your firewall status from the command line."
+---
+
+Every VPS exposed to the public internet is a target. UFW (Uncomplicated Firewall) is the simplest way to lock down your waveserv VPS: you allow the ports you actually use, deny the rest, and stop worrying about random probes hitting unused services.
+
+<Warning>
+  Always allow SSH **before** enabling UFW. If you enable the firewall without allowing port 22 first, you will lock yourself out of your own server and need to use the [in-browser console](/panel/console) to recover.
+</Warning>
+
+## Install UFW
+
+UFW is preinstalled on most images. If it is missing, install it with:
+
+```bash
+sudo apt update
+sudo apt install ufw -y
+```
+
+## Set default rules
+
+Block all incoming traffic by default and allow all outgoing traffic. This is the safe baseline.
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+```
+
+## Allow the ports you need
+
+<Steps>
+  <Step title="Allow SSH first">
+    ```bash
+    sudo ufw allow 22/tcp
+    ```
+  </Step>
+  <Step title="Allow web traffic if you run a website">
+    ```bash
+    sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
+    ```
+  </Step>
+  <Step title="Allow any custom ports your app needs">
+    ```bash
+    # Example: Minecraft server
+    sudo ufw allow 25565/tcp
+    ```
+  </Step>
+  <Step title="Enable the firewall">
+    ```bash
+    sudo ufw enable
+    ```
+  </Step>
+</Steps>
+
+## Check status and rules
+
+```bash
+sudo ufw status verbose
+sudo ufw status numbered
+```
+
+## Remove a rule
+
+```bash
+# Remove by rule spec
+sudo ufw delete allow 80/tcp
+
+# Or remove by number from `status numbered`
+sudo ufw delete 3
+```
+
+## Disable UFW
+
+```bash
+sudo ufw disable
+```
+
+<Tip>
+  Only open the ports you actually need. Every open port is one more thing to keep patched.
+</Tip>
