@@ -1,0 +1,84 @@
+---
+title: "Keep Your waveserv VPS Updated and Patched Safely"
+sidebarTitle: "Package Updates"
+description: "Install security patches, update installed packages, and enable unattended upgrades on your waveserv VPS running Debian or Ubuntu."
+---
+
+An unpatched server is the easiest kind of server to compromise. Ubuntu and Debian make patching straightforward: one command refreshes the package index, another installs the updates. Automating it takes a few minutes and pays off forever.
+
+## Update the package index
+
+Refresh the list of available packages from Ubuntu or Debian's repositories.
+
+```bash
+sudo apt update
+```
+
+## Install available upgrades
+
+```bash
+# Upgrade all installed packages
+sudo apt upgrade -y
+
+# Upgrade and remove/add packages as needed to satisfy dependencies
+sudo apt full-upgrade -y
+```
+
+## Remove packages you no longer need
+
+```bash
+sudo apt autoremove -y
+sudo apt autoclean
+```
+
+## Check if a reboot is required
+
+Some updates (especially kernel updates) do not take effect until you reboot.
+
+```bash
+[ -f /var/run/reboot-required ] && echo "Reboot required" || echo "No reboot needed"
+```
+
+If a reboot is needed, see [Power Controls](/vps/start-stop-restart).
+
+## Enable automatic security updates
+
+<Steps>
+  <Step title="Install unattended-upgrades">
+    ```bash
+    sudo apt install unattended-upgrades -y
+    ```
+  </Step>
+  <Step title="Enable it">
+    ```bash
+    sudo dpkg-reconfigure --priority=low unattended-upgrades
+    ```
+
+    Select **Yes** when prompted.
+  </Step>
+  <Step title="Verify it is running">
+    ```bash
+    sudo systemctl status unattended-upgrades
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+  Automatic updates handle **security patches** only by default. You should still run `sudo apt upgrade` periodically to keep everything else current.
+</Tip>
+
+## Search for a package
+
+```bash
+apt search nginx
+apt show nginx
+```
+
+## Fix broken packages
+
+If an update is interrupted or a package fails to install:
+
+```bash
+sudo apt --fix-broken install
+sudo dpkg --configure -a
+```
