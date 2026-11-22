@@ -1,0 +1,74 @@
+---
+title: "Reinstall Your waveserv VPS Operating System Safely"
+sidebarTitle: "Reinstall OS"
+description: "Wipe and reinstall your VPS operating system from the waveserv panel to start fresh with a clean slate — all data will be erased."
+---
+
+Reinstalling the OS completely wipes your VPS and provisions a fresh server from scratch. This is useful when your server is broken beyond repair, has been compromised, or you simply want to switch to a different operating system. The process typically takes 1–2 minutes, after which you'll have a clean slate with a brand-new installation.
+
+<Warning>
+  **OS reinstall permanently erases ALL data on your VPS** — including files, databases, installed software, and configurations. There is no way to recover this data after the reinstall begins. Back up anything important before you proceed.
+</Warning>
+
+## How to reinstall
+
+<Steps>
+  <Step title="Log in to the waveserv panel">
+    Log in to the [waveserv Panel](http://waveserv.com/login)  and navigate to your dashboard.
+  </Step>
+  <Step title="Select your VPS">
+    Click on the VPS you want to reinstall to open its management page.
+  </Step>
+  <Step title="Open Settings or Danger Zone">
+    Click the **Settings** tab or scroll down to the **Danger Zone** section at the bottom of the page.
+  </Step>
+  <Step title="Click Reinstall OS">
+    Click the **Reinstall OS** button. A dialog will open prompting you to choose your new operating system and confirm the action.
+  </Step>
+  <Step title="Choose your operating system">
+    Select your desired OS from the dropdown menu (for example, _Ubuntu 22.04_, _Debian 11_). See the [Available operating systems](#available-operating-systems) section below for the full list.
+  </Step>
+  <Step title="Type the confirmation phrase">
+    Type `REINSTALL` in the confirmation box exactly as shown. This step exists to prevent accidental data loss.
+  </Step>
+  <Step title="Click Confirm and wait">
+    Click **Confirm** to begin the reinstall. The process takes **1–2 minutes**. Your VPS will be offline during this time and will automatically boot into the new OS when complete.
+  </Step>
+</Steps>
+
+## After reinstall
+
+Once the reinstall is complete, a few things are worth knowing:
+
+- **Your IP address stays the same.** You can reconnect using the same IP as before.
+- **You will receive new root credentials.** Check your FreeHost dashboard or your registered email for the new root password.
+- **Run a full system update immediately** as your first step after logging in:
+
+```bash
+apt update && apt upgrade -y
+```
+
+This ensures you have the latest security patches and package versions before you start configuring anything.
+
+## Available operating systems
+
+waveserv supports the following operating systems for VPS provisioning:
+
+- **Ubuntu 22.04 LTS** _(recommended for beginners)_
+- Ubuntu 20.04 LTS
+- Debian 12
+- Debian 11
+- CentOS 7
+
+<Tip>
+  **Ubuntu 22.04 LTS** is the most widely supported OS and has the best community documentation. If you are unsure which OS to choose, pick this one.
+</Tip>
+
+## When to reinstall
+
+Consider reinstalling your OS in the following situations:
+
+- Your server has been **compromised or hacked** and you can no longer trust its integrity.
+- Your server is **unbootable** and cannot be recovered through normal troubleshooting.
+- You want a **completely fresh start** with no leftover configuration or software.
+- You are **switching from one operating system to another** (for example, moving from CentOS to Ubuntu).
